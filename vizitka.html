@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Наталья Блинова — визитка</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* ====== Данные для редактирования — см. блок DATA в скрипте внизу ====== */
+  :root {
+    --bg: #f4efe9;
+    --card: #fffdfa;
+    --ink: #2b2420;
+    --muted: #7a6d64;
+    --accent: #b5654a;
+    --accent-soft: #f1dfd6;
+    --line: #e7ddd4;
+    --shadow: 0 20px 50px rgba(80, 50, 30, .15);
+  }
+  [data-theme="dark"] {
+    --bg: #1c1816;
+    --card: #28221f;
+    --ink: #f3ebe4;
+    --muted: #b3a59a;
+    --accent: #e0927a;
+    --accent-soft: #3d2d27;
+    --line: #3a322d;
+    --shadow: 0 20px 50px rgba(0, 0, 0, .45);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    padding: 24px 16px;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Manrope", system-ui, sans-serif;
+    transition: background .4s, color .4s;
+  }
+
+  .toolbar {
+    position: fixed; top: 16px; right: 16px;
+    display: flex; gap: 8px;
+  }
+  .icon-btn {
+    width: 40px; height: 40px; border-radius: 50%;
+    border: 1px solid var(--line); background: var(--card); color: var(--ink);
+    cursor: pointer; font-size: 18px;
+  }
+
+  .scene { width: min(420px, 100%); aspect-ratio: 1.6 / 1; perspective: 1400px; }
+  @media (max-width: 440px) { .scene { aspect-ratio: auto; height: 300px; } }
+
+  .card {
+    position: relative; width: 100%; height: 100%;
+    transform-style: preserve-3d;
+    transition: transform .8s cubic-bezier(.2, .8, .2, 1);
+    cursor: pointer;
+  }
+  .card.flipped { transform: rotateY(180deg); }
+
+  .face {
+    position: absolute; inset: 0;
+    backface-visibility: hidden; -webkit-backface-visibility: hidden;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+    padding: 28px;
+    overflow: hidden;
+  }
+  .face::before {
+    content: ""; position: absolute; width: 240px; height: 240px; border-radius: 50%;
+    background: var(--accent-soft); right: -90px; top: -110px; z-index: 0;
+  }
+  .face > * { position: relative; z-index: 1; }
+
+  /* Лицевая сторона */
+  .front { display: flex; flex-direction: column; justify-content: space-between; }
+  .monogram {
+    width: 54px; height: 54px; border-radius: 50%;
+    display: grid; place-items: center;
+    background: var(--accent); color: var(--card);
+    font-family: "Cormorant Garamond", serif; font-size: 22px; font-weight: 600;
+  }
+  h1 {
+    font-family: "Cormorant Garamond", serif; font-weight: 600;
+    font-size: clamp(30px, 8vw, 40px); line-height: 1; margin: 0 0 8px;
+  }
+  .role { color: var(--accent); font-weight: 600; font-size: 14px; letter-spacing: .04em; min-height: 1.3em; }
+  .caret { display: inline-block; width: 1px; background: var(--accent); animation: blink 1s steps(1) infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+  .hint { font-size: 12px; color: var(--muted); }
+
+  /* Оборотная сторона */
+  .back { transform: rotateY(180deg); display: flex; flex-direction: column; gap: 10px; justify-content: center; }
+  .back h2 { font-family: "Cormorant Garamond", serif; font-size: 22px; margin: 0 0 4px; }
+  .contact {
+    display: flex; align-items: center; gap: 12px;
+    padding: 9px 12px; border-radius: 12px;
+    border: 1px solid var(--line); background: transparent; color: var(--ink);
+    font: inherit; font-size: 14px; text-align: left; text-decoration: none;
+    cursor: pointer; transition: border-color .2s, transform .2s;
+  }
+  .contact:hover { border-color: var(--accent); transform: translateX(4px); }
+  .contact .ic { width: 22px; text-align: center; color: var(--accent); }
+  .contact .val { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .contact .act { font-size: 11px; color: var(--muted); }
+
+  .toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translate(-50%, 20px);
+    background: var(--ink); color: var(--card);
+    padding: 10px 18px; border-radius: 999px; font-size: 14px;
+    opacity: 0; transition: .3s; pointer-events: none;
+  }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <button class="icon-btn" id="themeBtn" title="Сменить тему">☾</button>
+</div>
+
+<div class="scene">
+  <div class="card" id="card" tabindex="0" role="button" aria-label="Перевернуть визитку">
+    <div class="face front">
+      <div class="monogram" id="monogram"></div>
+      <div>
+        <h1 id="name"></h1>
+        <div class="role"><span id="role"></span><span class="caret">&nbsp;</span></div>
+      </div>
+      <div class="hint">Нажмите, чтобы увидеть контакты ↻</div>
+    </div>
+    <div class="face back">
+      <h2>Связаться со мной</h2>
+      <div id="contacts" style="display:flex;flex-direction:column;gap:8px"></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  /* ===================== DATA — редактируйте здесь ===================== */
+  const DATA = {
+    name: "Наталья Блинова",
+    roles: ["Эксперт по НейроОбаянию", "Ваша должность", "Ваш слоган"],
+    contacts: [
+      { icon: "✉", label: "email@example.com",    copy: "email@example.com" },
+      { icon: "☏", label: "+1 (000) 000-00-00",   copy: "+10000000000" },
+      { icon: "◎", label: "@instagram",           link: "https://instagram.com/" },
+      { icon: "✈", label: "Telegram",             link: "https://t.me/" }
+    ]
+  };
+  /* ==================================================================== */
+
+  const $ = id => document.getElementById(id);
+  $("name").textContent = DATA.name;
+  $("monogram").textContent = DATA.name.split(" ").map(w => w[0]).join("");
+  document.title = DATA.name + " — визитка";
+
+  // Переворот карточки
+  const card = $("card");
+  const flip = () => card.classList.toggle("flipped");
+  card.addEventListener("click", e => { if (!e.target.closest(".contact")) flip(); });
+  card.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); flip(); } });
+
+  // Контакты: копирование или переход по ссылке
+  const toast = msg => {
+    const t = $("toast"); t.textContent = msg; t.classList.add("show");
+    clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove("show"), 1800);
+  };
+  DATA.contacts.forEach(c => {
+    const el = document.createElement(c.link ? "a" : "button");
+    el.className = "contact";
+    el.innerHTML = `<span class="ic">${c.icon}</span><span class="val"></span><span class="act">${c.link ? "открыть ↗" : "копировать"}</span>`;
+    el.querySelector(".val").textContent = c.label;
+    if (c.link) { el.href = c.link; el.target = "_blank"; el.rel = "noopener"; }
+    else el.addEventListener("click", async () => {
+      try { await navigator.clipboard.writeText(c.copy); toast("Скопировано: " + c.label); }
+      catch { toast(c.label); }
+    });
+    $("contacts").appendChild(el);
+  });
+
+  // Печатающаяся подпись
+  let ri = 0, ci = 0, del = false;
+  (function type() {
+    const word = DATA.roles[ri];
+    $("role").textContent = word.slice(0, ci);
+    if (!del && ci < word.length) ci++;
+    else if (del && ci > 0) ci--;
+    else if (!del) { del = true; return setTimeout(type, 1800); }
+    else { del = false; ri = (ri + 1) % DATA.roles.length; }
+    setTimeout(type, del ? 35 : 70);
+  })();
+
+  // Тема
+  const themeBtn = $("themeBtn");
+  const setTheme = t => {
+    document.documentElement.dataset.theme = t;
+    themeBtn.textContent = t === "dark" ? "☀" : "☾";
+    try { localStorage.setItem("vizitka-theme", t); } catch {}
+  };
+  let saved = null; try { saved = localStorage.getItem("vizitka-theme"); } catch {}
+  setTheme(saved || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"));
+  themeBtn.addEventListener("click", () =>
+    setTheme(document.documentElement.dataset.theme === "dark" ? "light" : "dark"));
+</script>
+</body>
+</html>

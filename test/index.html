@@ -289,6 +289,13 @@
   .progress { height: 3px; background: #E3ECF3; overflow: hidden; margin-bottom: 28px; }
   .progress > span { display: block; height: 100%; width: 0; background: var(--gold-shine); background-size: 250% 100%; transition: width .4s ease; }
 
+  /* Подсказка под вопросом */
+  .hint {
+    margin: 0; padding: 12px 14px; background: #FBF6EC; border-left: 3px solid var(--gold);
+    font-size: 14.5px; line-height: 1.45; color: #4A4A50;
+  }
+  .hint strong { color: #1B2744; font-weight: 600; }
+
   /* Варианты ответа: ледяной голубой → при выборе глубокий синий с золотом */
   .options { display: grid; gap: 10px; margin-top: 22px; }
   .option {
@@ -558,6 +565,7 @@
         </div>
         <div class="progress"><span id="progress-bar"></span></div>
         <h2 id="question-text"></h2>
+        <p class="hint"><strong>Выберите один вариант</strong>, который ближе всего к&nbsp;Вам. Если ни&nbsp;один не&nbsp;подходит полностью, выбирайте самый близкий.</p>
         <div class="options" id="options"></div>
       </section>
 

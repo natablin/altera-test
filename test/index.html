@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Какая ловушка сейчас управляет Вами — Altera</title>
+<meta name="description" content="Бесплатный тест из 8 вопросов от Altera. Узнайте, какая внутренняя ловушка удерживает Вас сейчас.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* ====== Цвета из брендбука Altera ====== */
+  :root {
+    --rose: #E3D4CF;      /* серо-розовый */
+    --cream: #F5F1EA;     /* крем / экрю */
+    --sky: #C7D6DE;       /* пыльный голубой */
+    --ink: #4A4A50;       /* графит */
+    --amethyst: #8C6A2E;  /* акцент: глубокое золото (фиолетовый убран) */
+    --slate: #4C5C6B;     /* серо-синий */
+    --mist: #E9E9ED;      /* светло-серый */
+    --lilac: #CDBDE3;     /* светлый аметист */
+    --gold: #C9A55C;      /* золото — акценты */
+    --gold-shine: linear-gradient(110deg, #A8843F 0%, #D9BB74 22%, #FFF3CF 34%, #D4B062 46%, #A8843F 62%, #E6CD8E 80%, #A8843F 100%);
+    --plum-grad: linear-gradient(160deg, #1F2F52 0%, #131D36 100%); /* глубокий синий для тёмных блоков */
+    --card: #FFFDF9;
+    --muted: #7c7a80;
+    --line: #e2d8cf;
+    --error: #a8453d;
+    --serif: "Fraunces", Georgia, serif;
+    --sans: "Inter", system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  html, body { margin: 0; }
+  body {
+    background: var(--cream);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  .container { width: min(640px, 100%); margin: 0 auto; padding: 0 20px; }
+  h1, h2, h3 { font-family: var(--serif); font-weight: 400; line-height: 1.15; margin: 0; }
+  p { margin: 0 0 14px; }
+
+  /* ---------- Шапка ---------- */
+  .topbar { padding: 22px 0 10px; border-bottom: 1px solid var(--line); }
+  .topbar .container { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; }
+  .logo { font-family: var(--serif); font-size: 24px; letter-spacing: .04em; color: var(--ink); text-decoration: none; }
+  .logo em { color: var(--amethyst); font-style: italic; }
+  .topbar .logo { font-size: 38px; line-height: 1.1; }
+  .tagline { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); padding-left: 2px; }
+
+  /* ---------- Кнопки ---------- */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 240px; padding: 17px 36px;
+    border: 0; border-radius: 999px;
+    background: var(--gold-shine); background-size: 250% 100%;
+    animation: shimmer 7s linear infinite;
+    color: #3A2F2C; font: 600 16px/1.2 var(--sans); letter-spacing: .02em;
+    cursor: pointer; text-decoration: none;
+    box-shadow: 0 12px 28px rgba(140, 106, 46, .32);
+    transition: transform .15s, box-shadow .2s, opacity .2s;
+  }
+  .btn:hover { transform: translateY(-2px); box-shadow: 0 16px 34px rgba(140, 106, 46, .4); }
+  .btn:disabled { opacity: .55; cursor: default; transform: none; }
+  .btn.light {
+    background: var(--gold-shine); background-size: 250% 100%;
+    color: #3A2F2C; font-weight: 600;
+    box-shadow: 0 12px 28px rgba(0,0,0,.28);
+    animation: shimmer 7s linear infinite;
+  }
+  /* Переливающееся золото */
+  .shimmer {
+    background: var(--gold-shine); background-size: 250% 100%;
+    -webkit-background-clip: text; background-clip: text;
+    color: transparent; -webkit-text-fill-color: transparent;
+    animation: shimmer 7s linear infinite;
+  }
+  @keyframes shimmer { from { background-position: 0% 0; } to { background-position: 250% 0; } }
+  @media (prefers-reduced-motion: reduce) { .shimmer, .btn { animation: none; } }
+  .btn.full { width: 100%; min-width: 0; }
+  .meta { font-size: 11.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); margin-top: 16px; }
+
+  /* ---------- 1. Первый экран ---------- */
+  .hero { padding: 36px 0 56px; }
+  /* «5» слева во всю высоту; справа сверху клетка, снизу «ловушек,» — на одной линии с основанием цифры */
+  .hero-top {
+    display: grid; grid-template-columns: auto 1fr; grid-template-rows: 1fr auto;
+    column-gap: 10px; align-items: end;
+  }
+  .hero-five {
+    grid-row: 1 / 3;
+    font-family: var(--serif); font-weight: 400; font-style: italic;
+    font-size: clamp(170px, 46vw, 240px); line-height: .74; margin-left: -8px;
+    padding-right: .06em;
+  }
+  .hero-word {
+    font-family: var(--serif); font-style: italic; font-weight: 400;
+    font-size: clamp(44px, 12.5vw, 70px); line-height: .9; padding-bottom: 2px;
+  }
+  .hero h1 { font-size: clamp(28px, 7.8vw, 42px); line-height: 1.15; margin-top: 22px; }
+  .cage {
+    justify-self: center; align-self: end;
+    width: clamp(96px, 27vw, 140px); height: auto; margin-bottom: 8px;
+    fill: none; stroke: url(#goldStroke); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+  }
+  .cage .soft { opacity: .55; }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .hero .lead {
+    font-size: 17px; line-height: 1.55; margin: 26px 0 0; padding-left: 16px;
+    border-left: 1px solid var(--gold);
+  }
+
+  .dark-block {
+    background: var(--plum-grad);
+    color: #fff; padding: 44px 26px 48px; margin-top: 32px; position: relative; text-align: center;
+  }
+  .dark-block::after {
+    content: ""; position: absolute; inset: 14px; border: 1px solid rgba(226, 196, 128, .55); pointer-events: none;
+  }
+  .dark-block > * { position: relative; z-index: 1; }
+  .dark-block h2 { font-size: clamp(38px, 10vw, 52px); color: var(--gold); font-style: italic; margin-bottom: 14px; }
+  .dark-block p { font-size: 17px; color: #F3ECE4; font-weight: 300; margin-bottom: 30px; }
+  .dark-block strong { font-weight: 600; color: #fff; }
+  .dark-block .meta { color: rgba(255,255,255,.6); }
+
+  /* ---------- 2. Уверены ли Вы ---------- */
+  .section { padding: 56px 0; }
+  .question-block {
+    background: var(--plum-grad);
+    color: #fff; padding: 40px 24px 44px; position: relative;
+  }
+  .question-block h2 { font-size: clamp(34px, 9vw, 46px); margin-bottom: 26px; }
+  .question-block .q-row { display: grid; grid-template-columns: 96px 1fr; gap: 22px; align-items: center; }
+  .question-mark {
+    width: 96px; height: 96px; border: 1px solid var(--gold); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--serif); font-size: 58px; color: var(--gold); font-style: italic;
+  }
+  .question-block p { font-size: 17.5px; line-height: 1.5; color: #F3ECE4; font-weight: 300; margin: 0; }
+
+  .kicker { font-family: var(--serif); font-size: 24px; color: var(--amethyst); margin: 48px 0 16px; }
+  .dot-list { list-style: none; padding: 0; margin: 0 0 36px; }
+  .dot-list li { position: relative; padding: 9px 0 9px 26px; font-size: 17px; border-bottom: 1px solid var(--line); }
+  .dot-list li::before { content: ""; position: absolute; left: 4px; top: 19px; width: 7px; height: 7px; border-radius: 50%; background: var(--gold); }
+
+  .timeline { position: relative; padding-left: 0; margin-top: 8px; }
+  .timeline-item { display: grid; grid-template-columns: 56px 1fr; gap: 18px; align-items: center; padding: 12px 0; position: relative; }
+  .timeline-item:not(:last-child)::after {
+    content: ""; position: absolute; left: 27px; top: 62px; bottom: -14px; width: 1px; background: var(--gold);
+  }
+  .t-dot {
+    width: 56px; height: 56px; border-radius: 50%;
+    background: var(--cream); border: 1px solid var(--gold);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--serif); font-size: 26px; font-style: italic; color: var(--amethyst);
+  }
+  .timeline-item p { margin: 0; font-size: 17.5px; line-height: 1.45; }
+
+  /* ---------- 3. История ---------- */
+  /* Очень светлый, почти белый холодный голубой */
+  .story {
+    position: relative; margin-top: 70px;
+    background: linear-gradient(170deg, #F7FAFC 0%, #EAF1F6 100%);
+    padding: 44px 26px 36px; border-top: 2px solid var(--gold);
+  }
+  .story-art {
+    position: absolute; top: -86px; right: 0; width: 180px; height: auto;
+    fill: none; stroke: url(#goldStroke); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round;
+  }
+  .story h2 { font-size: clamp(34px, 9vw, 48px); margin-bottom: 22px; }
+  .story p { font-size: 17.5px; }
+  .story p:last-child { margin-bottom: 0; }
+  .quote {
+    text-align: center; max-width: 440px; margin: 36px auto 0;
+    font-family: var(--serif); font-style: italic; font-weight: 300;
+    font-size: clamp(22px, 6vw, 28px); line-height: 1.4; color: var(--amethyst);
+  }
+  .quote::before { content: ""; display: block; width: 48px; height: 1px; background: var(--gold); margin: 0 auto 20px; }
+
+  /* ---------- 4. Что такое ловушка ---------- */
+  /* Тонкая золотая рамка, лабиринт «разрывает» её левый верхний угол */
+  .define {
+    border: 1px solid rgba(201, 165, 92, .7);
+    padding: 72px 26px 40px; text-align: center; position: relative; margin: 70px 0 0 18px;
+  }
+  .define-art {
+    position: absolute; top: -62px; left: -30px;
+    width: 124px; height: 124px; padding: 8px; background: var(--cream);
+  }
+  .maze { width: 100%; height: 100%; fill: none; stroke: url(#goldStroke); stroke-width: 2; stroke-linecap: round; }
+  .define h2 { font-size: clamp(42px, 11vw, 58px); margin-bottom: 18px; }
+  .define p { color: var(--muted); font-size: 16.5px; text-wrap: balance; max-width: 420px; margin-left: auto; margin-right: auto; }
+  .define .lead-def { font-family: var(--serif); font-style: italic; font-size: clamp(20px, 5.4vw, 24px); line-height: 1.4; color: var(--ink); margin-bottom: 20px; }
+  .define .lead-def::after { content: ""; display: block; width: 48px; height: 1px; background: var(--gold); margin: 20px auto 0; }
+
+  /* ---------- 6. Если Вы: тёмно-синий блок с золотом ---------- */
+  .if-block {
+    background: var(--plum-grad); color: #fff;
+    padding: 44px 24px 44px; position: relative; text-align: left;
+  }
+  .if-block::after { content: ""; position: absolute; inset: 14px; border: 1px solid rgba(226, 196, 128, .45); pointer-events: none; }
+  .if-block > * { position: relative; z-index: 1; }
+  .if-title { font-family: var(--serif); font-style: italic; font-size: clamp(44px, 12vw, 60px); line-height: 1; margin: 0 0 18px 4px; padding-bottom: 4px; }
+  .num-list { list-style: none; padding: 0; margin: 0; }
+  .num-list li { display: grid; grid-template-columns: 58px 1fr; gap: 12px; padding: 18px 4px; border-top: 1px solid rgba(226, 196, 128, .28); }
+  .num-list .n { font-family: var(--serif); font-style: italic; font-weight: 300; font-size: 38px; line-height: .95; color: var(--gold); }
+  .num-list strong { display: block; font-weight: 600; font-size: 17.5px; color: #fff; margin-bottom: 2px; }
+  .num-list p { margin: 0; color: rgba(255, 255, 255, .72); font-size: 16px; line-height: 1.5; }
+  .if-outro {
+    font-family: var(--serif); font-style: italic; font-size: clamp(21px, 5.6vw, 25px); line-height: 1.4;
+    color: #E8D29A; border-top: 1px solid rgba(226, 196, 128, .28); padding: 26px 4px 0; margin: 0 0 26px; text-align: center;
+  }
+  .if-block .btn { display: flex; margin: 0 auto; width: fit-content; }
+
+  /* ---------- 7. Что даст знание ---------- */
+  .gain-head {
+    background: var(--plum-grad);
+    color: #fff; padding: 42px 26px 110px; position: relative;
+  }
+  .gain-head h2 { font-size: clamp(34px, 9vw, 46px); }
+  .gain-head h2 em { color: var(--gold); }
+  .gain-ring {
+    position: absolute; right: 26px; bottom: 26px; width: 90px; height: 90px;
+    border: 1px solid rgba(205,189,227,.5); border-radius: 50%;
+  }
+  .gain-ring::after { content: ""; position: absolute; inset: 38px; border-radius: 50%; background: var(--gold); }
+  .gains { margin-top: -60px; position: relative; display: grid; gap: 14px; }
+  .gain { background: var(--card); border: 1px solid var(--line); padding: 26px 22px; display: grid; grid-template-columns: 1fr 80px; gap: 16px; align-items: center; }
+  .gain h3 { font-family: var(--serif); font-weight: 400; font-size: 24px; margin-bottom: 6px; }
+  .gain p { margin: 0; color: var(--muted); font-size: 16px; }
+  /* Иконки: тёмно-синий круг, золотой ободок, рисунок переливающимся золотом */
+  .gain .icon {
+    width: 80px; height: 80px; border-radius: 50%;
+    background: var(--plum-grad);
+    box-shadow: 0 0 0 1px rgba(226, 196, 128, .7), 0 0 0 5px var(--card), 0 0 0 6px rgba(226, 196, 128, .35), 0 10px 24px rgba(19, 29, 54, .25);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .gain svg { width: 46px; height: 46px; stroke: url(#goldStroke); fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+  .gain svg .fill { fill: #E8D29A; stroke: none; }
+
+  /* ---------- 8. Финал ---------- */
+  .final {
+    background: var(--plum-grad);
+    color: #fff; text-align: center; padding: 64px 0 72px;
+  }
+  .final .note { color: #d9d4df; font-size: 17px; font-weight: 300; max-width: 420px; margin: 0 auto 40px; }
+  .final h2 { font-size: clamp(38px, 10vw, 54px); color: var(--gold); font-style: italic; margin-bottom: 10px; }
+  .final .sub { font-size: 18px; margin-bottom: 32px; }
+  .final .meta { color: rgba(255,255,255,.55); }
+
+  footer { text-align: center; padding: 28px 20px 36px; font-size: 12.5px; color: var(--muted); }
+  footer a { color: var(--muted); }
+
+  /* Плавное появление блоков при прокрутке */
+  .reveal { opacity: 0; transform: translateY(24px); transition: opacity .8s ease, transform .8s ease; }
+  .reveal.visible { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; transition: none; } html { scroll-behavior: auto; } }
+
+  /* ================== ТЕСТ: глубокий синий + ледяной голубой + золото ================== */
+  #quiz-app { display: none; min-height: 100vh; background: linear-gradient(175deg, var(--cream) 0%, #EAF1F6 100%); }
+  body.quiz-mode #landing { display: none; }
+  body.quiz-mode #quiz-app { display: block; }
+  .quiz-wrap { width: min(620px, 100%); margin: 0 auto; padding: 22px 16px 48px; }
+  .quiz-wrap header { text-align: center; padding: 6px 0 22px; }
+  .quiz-wrap header .logo { font-size: 32px; }
+  .card {
+    background: #fff; border-top: 2px solid var(--gold);
+    padding: 34px 26px 32px; box-shadow: 0 24px 60px rgba(19, 29, 54, .10);
+  }
+  @media (max-width: 480px) { .card { padding: 28px 18px; } }
+
+  .screen { display: none; animation: fade .45s ease; }
+  .screen.active { display: block; }
+  @keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  .card h2 { font-size: clamp(23px, 5.6vw, 29px); line-height: 1.3; margin-bottom: 16px; color: #1B2744; }
+  .eyebrow { font-size: 12px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: var(--amethyst); margin: 0 0 12px; }
+  .muted { color: var(--muted); font-size: 14.5px; }
+  .link-btn { background: none; border: 0; padding: 8px 0; color: var(--muted); font: 500 14px var(--sans); cursor: pointer; }
+  .link-btn:hover { color: #1B2744; }
+
+  /* Прогресс: золотая полоса на ледяном фоне */
+  .progress-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .progress-label { font-size: 12px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--amethyst); }
+  .progress { height: 3px; background: #E3ECF3; overflow: hidden; margin-bottom: 28px; }
+  .progress > span { display: block; height: 100%; width: 0; background: var(--gold-shine); background-size: 250% 100%; transition: width .4s ease; }
+
+  /* Варианты ответа: ледяной голубой → при выборе глубокий синий с золотом */
+  .options { display: grid; gap: 10px; margin-top: 22px; }
+  .option {
+    display: grid; grid-template-columns: 22px 1fr; gap: 14px; align-items: center;
+    text-align: left; width: 100%; padding: 16px 18px;
+    background: #EEF4F8; border: 1px solid #DCE7EF;
+    color: #1B2744; font: 400 15.5px/1.45 var(--sans); cursor: pointer;
+    transition: background .2s, border-color .2s, color .2s, transform .15s;
+  }
+  .option::before {
+    content: ""; width: 20px; height: 20px; border-radius: 50%;
+    border: 1.5px solid #9DB3C6; background: #fff; box-sizing: border-box; transition: all .2s;
+  }
+  .option:hover { background: #E2ECF4; border-color: #B9CCDB; }
+  .option:active { transform: scale(.99); }
+  .option.chosen { background: var(--plum-grad); border-color: var(--gold); color: #fff; }
+  .option.chosen::before { border: 6px solid var(--gold); background: #1B2744; }
+
+  /* Форма */
+  .field { margin-bottom: 16px; }
+  .field label { display: block; font-size: 13px; font-weight: 600; letter-spacing: .04em; color: #1B2744; margin-bottom: 6px; }
+  .field input {
+    width: 100%; padding: 15px 18px; border: 1px solid #DCE7EF;
+    background: #F5F9FB; color: #1B2744; font: 400 16px var(--sans);
+  }
+  .field input:focus { outline: none; border-color: #1F2F52; background: #fff; box-shadow: 0 0 0 3px rgba(201, 165, 92, .25); }
+  .consent { display: flex; gap: 10px; align-items: flex-start; font-size: 13.5px; color: var(--slate); margin: 4px 0 22px; }
+  .consent input { margin-top: 3px; width: 18px; height: 18px; accent-color: #1F2F52; flex-shrink: 0; }
+  .consent a { color: var(--amethyst); }
+  .error { color: var(--error); font-size: 13.5px; min-height: 20px; margin: -8px 0 12px; }
+
+  /* Результат */
+  .result-title { font-style: italic; }
+  .result-body p { font-size: 16.5px; }
+  .result-body p.accent { font-family: var(--serif); font-style: italic; font-size: 21px; color: var(--amethyst); margin-top: 22px; }
+  .result-body p.accent::before { content: ""; display: block; width: 44px; height: 1px; background: var(--gold); margin-bottom: 18px; }
+  .cta-box {
+    margin-top: 30px; padding: 30px 24px; background: var(--plum-grad); position: relative; text-align: center;
+  }
+  .cta-box::after { content: ""; position: absolute; inset: 10px; border: 1px solid rgba(226, 196, 128, .45); pointer-events: none; }
+  .cta-box > * { position: relative; z-index: 1; }
+  .cta-box p { font-size: 15.5px; color: rgba(255, 255, 255, .85); margin-bottom: 20px; }
+  .cta-box .btn { padding: 16px 14px; font-size: 15px; letter-spacing: 0; }
+</style>
+</head>
+<body>
+
+<!-- =====================================================================
+     ЛЕНДИНГ — подводка к тесту
+     ===================================================================== -->
+<div id="landing">
+
+  <div class="topbar">
+    <div class="container">
+      <span class="logo">Alt<em>e</em>ra</span>
+      <span class="tagline">Where your next self begins</span>
+    </div>
+  </div>
+
+  <!-- 1. Первый экран -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-top">
+        <div class="hero-five shimmer" aria-hidden="true">5</div>
+          <svg class="cage" viewBox="0 0 220 260" aria-hidden="true">
+            <defs>
+              <!-- переливающееся золото для линий клетки -->
+              <linearGradient id="goldStroke" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="220" y2="0" spreadMethod="reflect">
+                <stop offset="0" stop-color="#A8843F"/>
+                <stop offset=".35" stop-color="#D9BB74"/>
+                <stop offset=".5" stop-color="#FFF3CF"/>
+                <stop offset=".65" stop-color="#D4B062"/>
+                <stop offset="1" stop-color="#A8843F"/>
+                <animateTransform attributeName="gradientTransform" type="translate" values="-220 0; 220 0" dur="7s" repeatCount="indefinite"/>
+              </linearGradient>
+            </defs>
+            <circle cx="100" cy="14" r="8"/>
+            <line x1="100" y1="22" x2="100" y2="50"/>
+            <path d="M40 110 A60 60 0 0 1 160 110"/>
+            <ellipse cx="100" cy="110" rx="60" ry="6"/>
+            <ellipse cx="100" cy="228" rx="60" ry="8"/>
+            <path d="M40 228 v14 a60 8 0 0 0 120 0 v-14" class="soft"/>
+            <line x1="40" y1="110" x2="40" y2="228"/>
+            <line x1="55" y1="70" x2="55" y2="228"/>
+            <line x1="70" y1="58" x2="70" y2="228"/>
+            <line x1="85" y1="52" x2="85" y2="228"/>
+            <line x1="100" y1="50" x2="100" y2="228"/>
+            <line x1="115" y1="52" x2="115" y2="148"/>
+            <line x1="115" y1="212" x2="115" y2="228"/>
+            <line x1="130" y1="58" x2="130" y2="148"/>
+            <line x1="130" y1="212" x2="130" y2="228"/>
+            <line x1="145" y1="70" x2="145" y2="148"/>
+            <line x1="145" y1="212" x2="145" y2="228"/>
+            <line x1="160" y1="110" x2="160" y2="228"/>
+            <line x1="108" y1="148" x2="160" y2="148"/>
+            <line x1="108" y1="212" x2="160" y2="212"/>
+            <!-- открытая дверца -->
+            <path d="M160 148 L198 136 L198 200 L160 212" class="soft"/>
+            <line x1="173" y1="144" x2="173" y2="208" class="soft"/>
+            <line x1="186" y1="140" x2="186" y2="204" class="soft"/>
+            <!-- жёрдочка -->
+            <line x1="58" y1="190" x2="100" y2="190" class="soft"/>
+            <!-- птица на свободе -->
+            <path class="bird" d="M168 72 q9 -10 18 0 q9 -10 18 0"/>
+          </svg>
+        <div class="hero-word shimmer">ловушек,</div>
+      </div>
+      <h1><span class="sr-only">5 ловушек, </span>из-за которых Вы&nbsp;живёте не&nbsp;свою&nbsp;жизнь</h1>
+      <p class="lead">Иногда жизнь идёт не&nbsp;туда, потому что решения за&nbsp;Вас принимает старая защита.</p>
+
+      <div class="dark-block">
+        <h2 class="shimmer">Узнайте,</h2>
+        <p><strong>какая ловушка управляет Вами сейчас:</strong> Вашими решениями, отношениями и&nbsp;тем, насколько Вы разрешаете себе быть собой.</p>
+        <button class="btn light start-quiz">Пройти тест</button>
+        <div class="meta">8 вопросов · 3 минуты · бесплатно</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. Уверены ли Вы -->
+  <section class="section reveal">
+    <div class="container">
+      <div class="question-block">
+        <h2>Уверены ли Вы,</h2>
+        <div class="q-row">
+          <div class="question-mark">?</div>
+          <p>что решения в&nbsp;Вашей жизни принимаете Вы сами, а&nbsp;не&nbsp;старый сценарий?</p>
+        </div>
+      </div>
+
+      <p class="kicker">Вспомните, как Вы обычно:</p>
+      <ul class="dot-list">
+        <li>принимаете похвалу</li>
+        <li>реагируете на критику, даже мягкую</li>
+        <li>решаете про деньги и карьеру</li>
+        <li>ведёте себя среди малознакомых людей</li>
+        <li>отдыхаете</li>
+        <li>беретесь за что-то новое</li>
+      </ul>
+
+      <div class="timeline">
+        <div class="timeline-item"><div class="t-dot">?</div><p>Всегда ли в&nbsp;этот момент внутри спокойно и&nbsp;есть опора?</p></div>
+        <div class="timeline-item"><div class="t-dot">?</div><p>Или чаще сомнение, тревога, желание спрятаться или сделать всё идеально?</p></div>
+        <div class="timeline-item"><div class="t-dot">?</div><p>Хотите понять, откуда это в&nbsp;Вас?</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. История -->
+  <section class="section reveal">
+    <div class="container">
+      <div class="story">
+        <!-- птица в полёте: свобода, с которой мы рождаемся -->
+        <svg class="story-art" viewBox="0 0 160 90" aria-hidden="true">
+          <path d="M14 50 C28 42 40 48 50 62 C58 48 70 42 86 50"/>
+          <path d="M88 28 C97 23 104 27 110 36 C115 27 122 23 132 28"/>
+          <path d="M134 10 C139 7 143 9 146 15 C149 9 153 7 158 10"/>
+        </svg>
+        <h2>Люди рождаются свободными</h2>
+        <p>Ребёнок приходит в&nbsp;мир идеальным, а&nbsp;потом слышит: «не&nbsp;высовывайся», «что люди скажут», «могла&nbsp;бы и&nbsp;лучше».</p>
+        <p>Психика находит способ справиться: спрятаться, подстроиться, стать безупречной. И&nbsp;этот способ работает годами.</p>
+        <p>Потом Вы вырастаете, становитесь сильной, взрослой, успешной, а&nbsp;способ остаётся и&nbsp;решает за&nbsp;Вас, что можно хотеть, насколько можно быть видной и&nbsp;когда можно выдохнуть.</p>
+      </div>
+      <p class="quote">Единственное, что со&nbsp;мной не&nbsp;так, — это моя вера в&nbsp;то, что со&nbsp;мной что-то не&nbsp;так.</p>
+    </div>
+  </section>
+
+  <!-- 4. Что такое ловушка -->
+  <section class="section reveal">
+    <div class="container">
+      <div class="define">
+        <div class="define-art" aria-hidden="true">
+          <!-- круглый лабиринт: ловушка, из которой есть выход -->
+          <svg class="maze" viewBox="0 0 120 120">
+            <circle cx="60" cy="60" r="52" stroke-dasharray="290 36.7" transform="rotate(-70 60 60)"/>
+            <circle cx="60" cy="60" r="40" stroke-dasharray="220 31.3" transform="rotate(110 60 60)"/>
+            <circle cx="60" cy="60" r="28" stroke-dasharray="150 25.9" transform="rotate(10 60 60)"/>
+            <circle cx="60" cy="60" r="16" stroke-dasharray="80 20.5" transform="rotate(200 60 60)"/>
+            <line x1="94.6" y1="80" x2="105" y2="86"/>
+            <line x1="31.7" y1="31.7" x2="23.2" y2="23.2"/>
+            <line x1="35.8" y1="74" x2="25.4" y2="80"/>
+            <line x1="81.4" y1="42" x2="90.6" y2="34.3"/>
+            <line x1="57.2" y1="44.2" x2="55.1" y2="32.4"/>
+            <circle cx="60" cy="60" r="3.5" fill="#D9BB74" stroke="none"/>
+          </svg>
+        </div>
+        <h2>Ловушка</h2>
+        <p class="lead-def">Старая защита, которая когда-то помогла Вам выжить, а&nbsp;теперь удерживает на&nbsp;месте.</p>
+        <p>Вы думаете, что выбираете сами: работу, людей, реакцию на&nbsp;слова. На&nbsp;самом деле часто выбирает сценарий, написанный много лет назад. Он&nbsp;может привести только туда, где Вы&nbsp;уже&nbsp;были.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. Если Вы -->
+  <section class="section reveal">
+    <div class="container">
+      <div class="if-block">
+      <h2 class="if-title shimmer">Если Вы:</h2>
+      <ol class="num-list">
+        <li><span class="n">01</span><div><strong>выбираете</strong><p>то, что точно получится, а&nbsp;не&nbsp;то, чего по‑настоящему хочется</p></div></li>
+        <li><span class="n">02</span><div><strong>не верите</strong><p>похвале, даже когда объективно всё сделали хорошо</p></div></li>
+        <li><span class="n">03</span><div><strong>оглядываетесь</strong><p>на «что подумают», прежде чем сказать или сделать</p></div></li>
+        <li><span class="n">04</span><div><strong>знаете ответ,</strong><p>но всё равно идёте за советом и&nbsp;откладываете решение</p></div></li>
+        <li><span class="n">05</span><div><strong>отдыхаете</strong><p>только когда всё сделано идеально, то&nbsp;есть почти никогда</p></div></li>
+        <li><span class="n">06</span><div><strong>снаружи сильная,</strong><p>а внутри живёт ощущение «я не&nbsp;такая, как надо»</p></div></li>
+        <li><span class="n">07</span><div><strong>устали</strong><p>держать лицо и&nbsp;не&nbsp;можете по‑настоящему выдохнуть</p></div></li>
+      </ol>
+      <p class="if-outro">…значит, одна из&nbsp;ловушек уже управляет Вами. Тест покажет какая.</p>
+      <button class="btn start-quiz">Пройти тест</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. Что даст знание -->
+  <section class="section reveal">
+    <div class="container">
+      <div class="gain-head">
+        <h2>Что даст Вам знание <em>своей ловушки?</em></h2>
+      </div>
+      <div class="gains">
+        <div class="gain">
+          <div><h3>Увидите</h3><p>какой сценарий на&nbsp;самом деле управляет Вашими решениями в&nbsp;работе, деньгах и&nbsp;отношениях.</p></div>
+          <div class="icon"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M4 26 C11 15 18 12 24 12 S37 15 44 26 C37 37 30 40 24 40 S11 37 4 26 Z"/><circle cx="24" cy="26" r="7.5"/><circle class="fill" cx="24" cy="26" r="3"/><line x1="24" y1="5" x2="24" y2="8.5"/><line x1="13" y1="8" x2="15" y2="11.5"/><line x1="35" y1="8" x2="33" y2="11.5"/></svg></div>
+        </div>
+        <div class="gain">
+          <div><h3>Поймёте</h3><p>почему так ранит критика, почему не&nbsp;верится похвале и&nbsp;почему никак не&nbsp;получается выдохнуть.</p></div>
+          <div class="icon"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 41 C12 32 5 25.5 5 17.5 C5 11.5 9.5 7.5 15 7.5 C19 7.5 22 9.5 24 12.5 C26 9.5 29 7.5 33 7.5 C38.5 7.5 43 11.5 43 17.5 C43 25.5 36 32 24 41 Z"/><circle class="fill" cx="24" cy="20" r="3.6"/><path class="fill" d="M22.4 22.5 L21 30 H27 L25.6 22.5 Z"/></svg></div>
+        </div>
+        <div class="gain">
+          <div><h3>Узнаете,</h3><p>с&nbsp;чего начать, чтобы старая защита перестала решать за&nbsp;Вас и&nbsp;превратилась в&nbsp;опору.</p></div>
+          <div class="icon"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M14 42 V8 H32 V42"/><path d="M14 8 L24 12 V45 L14 42 Z"/><circle class="fill" cx="21" cy="28" r="1.6"/><line x1="7" y1="42" x2="41" y2="42"/><line x1="36" y1="17" x2="42" y2="14"/><line x1="36" y1="25" x2="44" y2="25"/><line x1="36" y1="33" x2="42" y2="36"/></svg></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. Финал -->
+  <section class="final">
+    <div class="container">
+      <p class="note">Отвечайте не&nbsp;так, как «правильно», а&nbsp;так, как есть. Первый отклик обычно самый честный.</p>
+      <h2 class="shimmer">Пройдите тест</h2>
+      <p class="sub">и узнайте, какая ловушка управляет Вами сейчас</p>
+      <button class="btn light start-quiz">Пройти тест</button>
+      <div class="meta">8 вопросов · 3 минуты · бесплатно</div>
+    </div>
+  </section>
+
+  <footer>
+    Тест не является психологической или медицинской диагностикой.<br>
+    © Altera · <a href="privacy.html" target="_blank">Политика конфиденциальности</a>
+  </footer>
+</div>
+
+<!-- =====================================================================
+     ТЕСТ
+     ===================================================================== -->
+<div id="quiz-app">
+  <div class="quiz-wrap">
+    <header><span class="logo">Alt<em>e</em>ra</span></header>
+    <div class="card">
+
+      <!-- Вопросы -->
+      <section class="screen" id="screen-quiz">
+        <div class="progress-row">
+          <span class="progress-label" id="progress-label">Вопрос 1 из 8</span>
+          <button class="link-btn" id="back-btn">← Назад</button>
+        </div>
+        <div class="progress"><span id="progress-bar"></span></div>
+        <h2 id="question-text"></h2>
+        <div class="options" id="options"></div>
+      </section>
+
+      <!-- Имя и email -->
+      <section class="screen" id="screen-form">
+        <p class="eyebrow">Ваш результат готов</p>
+        <h2>Куда отправить результат?</h2>
+        <p class="muted">Оставьте имя и email, и Ваш результат сразу откроется на этой странице.</p>
+        <form id="lead-form" novalidate>
+          <div class="field">
+            <label for="name">Имя</label>
+            <input id="name" name="name" type="text" autocomplete="given-name" required>
+          </div>
+          <div class="field">
+            <label for="email">Email</label>
+            <input id="email" name="email" type="email" autocomplete="email" inputmode="email" required>
+          </div>
+          <label class="consent">
+            <input type="checkbox" id="consent" required>
+            <span>Я согласна на обработку моих персональных данных в соответствии с <a href="privacy.html" target="_blank">Политикой конфиденциальности</a></span>
+          </label>
+          <p class="error" id="form-error" role="alert"></p>
+          <button class="btn full" type="submit" id="submit-btn">Узнать результат</button>
+        </form>
+      </section>
+
+      <!-- Результат -->
+      <section class="screen" id="screen-result">
+        <p class="eyebrow" id="result-eyebrow"></p>
+        <h2 class="result-title" id="result-title"></h2>
+        <div class="result-body" id="result-body"></div>
+        <div class="cta-box">
+          <p>На бесплатной Персональной сессии мы разберём, как эта ловушка проявляется именно в Вашей жизни и с чего начать выход из неё.</p>
+          <a class="btn full" id="cta-btn" href="#" target="_blank" rel="noopener">Записаться на Персональную сессию</a>
+        </div>
+        <p style="text-align:center; margin-top:14px"><button class="link-btn" id="restart-btn">Пройти тест заново</button></p>
+      </section>
+
+    </div>
+    <footer>
+      Тест не является психологической или медицинской диагностикой.<br>
+      © Altera · <a href="privacy.html" target="_blank">Политика конфиденциальности</a>
+    </footer>
+  </div>
+</div>
+
+<script>
+/* =====================================================================
+   НАСТРОЙКИ — то, что мы будем менять
+   ===================================================================== */
+
+// Ссылка на кнопку «Записаться на Персональную сессию».
+// Пока пусто — кнопка никуда не ведёт. Потом вставим сюда ссылку.
+const CTA_URL = "";
+
+// Адрес Google-таблицы (Apps Script), куда сохраняются имя, email и результат.
+// Пока пусто — данные никуда не отправляются. Настроим на следующем шаге.
+const SHEET_URL = "";
+
+/* =====================================================================
+   ВОПРОСЫ. Буква = ловушка (A–E). На экране варианты перемешиваются.
+   ===================================================================== */
+const QUESTIONS = [
+  { q: "Когда Вы получаете похвалу за хорошо сделанную работу, что происходит внутри Вас?", a: {
+    A: "Не могу до конца в это поверить и жду, что вот-вот окажется, что я не так хороша, как им показалось",
+    B: "Радуюсь, но сразу думаю: а понравилось ли им по‑настоящему, или похвала была просто из вежливости",
+    C: "Смущаюсь и перевожу разговор, как будто хвалят не совсем меня",
+    D: "Приятно, но тут же хочется услышать это же от кого-то ещё, чтобы точно поверить",
+    E: "Коротко радуюсь и тут же вспоминаю, что можно было сделать ещё лучше" } },
+  { q: "Как Вы обычно реагируете на критику, даже мягкую?", a: {
+    A: "Теряю уверенность и хочу отступить туда, где безопаснее",
+    B: "Переживаю, что это изменит отношение ко мне",
+    C: "Воспринимаю как подтверждение того, что со мной что-то не так",
+    D: "Начинаю сомневаться в себе и хочу спросить у кого-то, права ли критика",
+    E: "Злюсь на себя за то, что допустила ошибку" } },
+  { q: "Как Вы действуете, когда нужно самой принять важное решение, например про деньги или карьеру?", a: {
+    A: "Выбираю самый безопасный вариант, чтобы не оказаться на виду",
+    B: "Думаю, что скажут об этом близкие или коллеги",
+    C: "Боюсь, что решение покажет, какая я на самом деле",
+    D: "Тяну время, спрашиваю совета, даже когда сама знаю ответ",
+    E: "Пытаюсь просчитать все варианты до идеала, прежде чем решиться" } },
+  { q: "Как Вы ведёте себя в компании малознакомых людей?", a: {
+    A: "Стараюсь не привлекать лишнего внимания",
+    B: "Подстраиваюсь под тех, кто рядом, чтобы понравиться",
+    C: "Держу дистанцию, боюсь, что увидят настоящую меня",
+    D: "Чувствую себя маленькой, будто не знаю, как правильно себя вести",
+    E: "Слежу за каждым словом, чтобы не сказать «не то»" } },
+  { q: "Как Вы относитесь к отдыху?", a: {
+    A: "Отдыхаю, только когда точно доказала, что заслужила",
+    B: "Сложно расслабиться, всё время немного «на сцене»",
+    C: "Даже во время отдыха где-то внутри тревога, что что-то не так",
+    D: "Часто не знаю, чем заняться, если рядом никого нет",
+    E: "Отдых начинается, только когда все дела сделаны идеально, то есть почти никогда" } },
+  { q: "Что Вы чувствуете, когда что-то идёт не по плану?", a: {
+    A: "Внутри голос: «я так и знала, что не справлюсь»",
+    B: "Переживаю, что об этом подумают другие",
+    C: "Ощущение, что это подтверждает мою «неправильность»",
+    D: "Паникую и хочу, чтобы кто-то другой взял ситуацию в руки",
+    E: "Злюсь на себя, даже если ошибка мелкая" } },
+  { q: "Как Вы выбираете новые задачи или возможности?", a: {
+    A: "Выбираю то, что точно получится, а не то, что хочется",
+    B: "Думаю, как это будет выглядеть со стороны",
+    C: "Сомневаюсь, что вообще имею на это право",
+    D: "Откладываю, боюсь не справиться одна",
+    E: "Берусь, только если уверена, что сделаю идеально" } },
+  { q: "Какая фраза внутри звучит у Вас чаще всего?", a: {
+    A: "«У других получается, а у меня нет»",
+    B: "«Что обо мне подумают?»",
+    C: "«Если узнают меня настоящую, разочаруются»",
+    D: "«Я не справлюсь одна, я не знаю как»",
+    E: "«Я недостаточно старалась, надо было лучше»" } },
+];
+
+/* =====================================================================
+   РЕЗУЛЬТАТЫ. Последний абзац каждого текста выделяется цветом.
+   ===================================================================== */
+const RESULTS = {
+  A: { trap: "Сломанные крылья",
+       title: "Вы можете больше, но что-то внутри удерживает Вас на месте",
+       text: [
+         "«Наверное, не справлюсь». «У других получается, а у меня — нет». Знакомо?",
+         "Даже когда объективно всё сделали хорошо, легче не становится. Первая трудность и уверенность куда-то уходит. Поэтому Вы чаще делаете то, что точно получится, а не то, что хочется. Хвалят, а Вы не верите.",
+         "Возможности проходят мимо. Не потому что Вы не можете. А потому что где-то внутри нет разрешения на большее.",
+         "Пора его дать себе." ] },
+  B: { trap: "Лайков",
+       title: "Вы живёте под чужим взглядом",
+       text: [
+         "Вы часто смотрите на себя со стороны. Оцениваете, как выглядите, что подумают, как воспримут Ваши слова.",
+         "Стараетесь понравиться, даже когда это идёт вразрез с Вашими желаниями. Подстраиваетесь, чтобы не разочаровать. И редко позволяете себе просто быть собой.",
+         "Внутри — усталость. От необходимости держать лицо. От невозможности выдохнуть.",
+         "Первый шаг — перестать спрашивать «что подумают» и начать спрашивать «а я этого хочу?»" ] },
+  C: { trap: "Чёрная метка",
+       title: "Внутри слышен чей-то диагноз: „Я не такая, как надо“",
+       text: [
+         "Вы можете быть успешной, ответственной, сильной. Но внутри ощущение, что Вы хуже. Недостаточная.",
+         "Похвалу сложно принять искренне, и Вы смущаетесь, переводите разговор. Любая ошибка кажется подтверждением несостоятельности. Иногда мелькает мысль: «если узнают меня настоящую, то разочаруются».",
+         "Снаружи — зрелость и сила. Внутри — маленькая девочка, которая однажды решила: «Я не такая, как нужно». Девочка выросла, но вывод остался.",
+         "На самом деле поломки не существует. Дело не в Вас, а в том, кто когда-то эту метку вручил." ] },
+  D: { trap: "Безрукая взрослость",
+       title: "Взрослая часть знает, но не может действовать",
+       text: [
+         "Вы многое понимаете, умеете анализировать, поддерживать других. Но когда доходит до собственной жизни, будто остаётесь без рук.",
+         "Откладываете важные шаги, боясь ошибиться. Спрашиваете совета, даже когда сами знаете ответ. Пугаетесь перемен — не потому что не хотите, а потому что не верите, что справитесь.",
+         "Снаружи — сила и самостоятельность. Внутри — страх перед выбором и ответственностью.",
+         "Это не Ваша сущность. Это старая защита, которая когда-то помогала выжить. Пора взять жизнь в свои взрослые руки." ] },
+  E: { trap: "Без права на ошибку",
+       title: "Жизнь как бесконечный экзамен без права на отдых",
+       text: [
+         "Ещё немного и можно будет выдохнуть. Только закончить проект, довести до идеала… Но покой не приходит.",
+         "Список задач бесконечный. Облегчение приходит только когда всё сделано безупречно, и то ненадолго. Вы злитесь, когда что-то идёт неидеально, даже по мелочи.",
+         "Снаружи — собранность и результат. Внутри — непроходящая усталость. Тело не умеет расслабляться.",
+         "Ваша ценность не в идеальности. Она в Вас." ] },
+};
+
+/* =====================================================================
+   Логика — дальше менять не нужно
+   ===================================================================== */
+const LETTERS = ["A", "B", "C", "D", "E"];
+let answers = [];   // выбранная буква по каждому вопросу
+let current = 0;
+let order = [];     // перемешанный порядок вариантов для каждого вопроса
+
+const $ = (id) => document.getElementById(id);
+
+function shuffle(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function show(id) {
+  document.querySelectorAll(".screen").forEach((s) => s.classList.remove("active"));
+  $(id).classList.add("active");
+  window.scrollTo({ top: 0 });
+}
+
+function startQuiz() {
+  answers = [];
+  current = 0;
+  order = QUESTIONS.map(() => shuffle(LETTERS));
+  document.body.classList.add("quiz-mode");
+  renderQuestion();
+  show("screen-quiz");
+}
+
+// «Назад» на первом вопросе возвращает на лендинг
+function goBack() {
+  if (current > 0) { current--; renderQuestion(); }
+  else { document.body.classList.remove("quiz-mode"); window.scrollTo({ top: 0 }); }
+}
+
+function renderQuestion() {
+  const item = QUESTIONS[current];
+  $("progress-label").textContent = `Вопрос ${current + 1} из ${QUESTIONS.length}`;
+  $("progress-bar").style.width = `${(current / QUESTIONS.length) * 100}%`;
+  $("question-text").textContent = item.q;
+
+  const box = $("options");
+  box.innerHTML = "";
+  order[current].forEach((letter) => {
+    const btn = document.createElement("button");
+    btn.className = "option" + (answers[current] === letter ? " chosen" : "");
+    btn.textContent = item.a[letter];
+    btn.onclick = () => choose(letter, btn);
+    box.appendChild(btn);
+  });
+}
+
+function choose(letter, btn) {
+  answers[current] = letter;
+  btn.classList.add("chosen");
+  setTimeout(() => {
+    if (current < QUESTIONS.length - 1) {
+      current++;
+      renderQuestion();
+    } else {
+      $("progress-bar").style.width = "100%";
+      show("screen-form");
+    }
+  }, 250);
+}
+
+// Считаем баллы. При равенстве побеждает ловушка, которая раньше по порядку A → E.
+function calcResult() {
+  const scores = { A: 0, B: 0, C: 0, D: 0, E: 0 };
+  answers.forEach((l) => scores[l]++);
+  let winner = "A";
+  LETTERS.forEach((l) => { if (scores[l] > scores[winner]) winner = l; });
+  return { winner, scores };
+}
+
+function renderResult(letter) {
+  const r = RESULTS[letter];
+  $("result-eyebrow").textContent = `Ваша ловушка — «${r.trap}»`;
+  $("result-title").textContent = `«${r.title}»`;
+  const body = $("result-body");
+  body.innerHTML = "";
+  r.text.forEach((t, i) => {
+    const p = document.createElement("p");
+    p.textContent = t;
+    if (i === r.text.length - 1) p.className = "accent";
+    body.appendChild(p);
+  });
+  const cta = $("cta-btn");
+  if (CTA_URL) {
+    cta.href = CTA_URL;
+  } else {
+    cta.removeAttribute("href");
+    cta.onclick = () => alert("Ссылка на запись скоро появится.");
+  }
+  show("screen-result");
+}
+
+async function sendToSheet(data) {
+  if (!SHEET_URL) return;
+  try {
+    await fetch(SHEET_URL, { method: "POST", mode: "no-cors", body: new URLSearchParams(data) });
+  } catch (e) {
+    // Если отправка не удалась, человек всё равно видит результат.
+    console.warn("Не удалось сохранить данные", e);
+  }
+}
+
+document.querySelectorAll(".start-quiz").forEach((b) => (b.onclick = startQuiz));
+$("restart-btn").onclick = startQuiz;
+$("back-btn").onclick = goBack;
+
+$("lead-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const name = $("name").value.trim();
+  const email = $("email").value.trim();
+  const err = $("form-error");
+
+  if (!name) return (err.textContent = "Пожалуйста, укажите имя.");
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return (err.textContent = "Проверьте, пожалуйста, email.");
+  if (!$("consent").checked) return (err.textContent = "Нужно согласие на обработку данных.");
+  err.textContent = "";
+
+  const { winner, scores } = calcResult();
+  const btn = $("submit-btn");
+  btn.disabled = true;
+  btn.textContent = "Считаем…";
+
+  await sendToSheet({
+    name,
+    email,
+    result: `${winner} — ${RESULTS[winner].trap}`,
+    scores: LETTERS.map((l) => `${l}:${scores[l]}`).join(" "),
+    consent: "да",
+    page: location.href,
+  });
+
+  btn.disabled = false;
+  btn.textContent = "Узнать результат";
+  renderResult(winner);
+});
+
+// Плавное появление блоков лендинга при прокрутке
+if ("IntersectionObserver" in window) {
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((en) => { if (en.isIntersecting) { en.target.classList.add("visible"); io.unobserve(en.target); } });
+  }, { threshold: 0.12 });
+  document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
+} else {
+  document.querySelectorAll(".reveal").forEach((el) => el.classList.add("visible"));
+}
+</script>
+</body>
+</html>
